@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Create the REST API
 aws apigateway create-rest-api --name "mandelbrot_api"
 
@@ -31,33 +33,24 @@ aws apigateway put-integration \
   --http-method GET \
   --integration-http-method POST \
   --type AWS \
-  --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):function:mandelbrot/invocations" \
-  --request-templates "$(cat <<EOF
-{
-  "application/json": "{ \"queryStringParameters\": { \"x\": \"\$input.params('x')\", \"y\": \"\$input.params('y')\", \"scale\": \"\$input.params('scale')\", \"line\": \"\$input.params('line')\", \"color_scheme\": \"\$input.params('color_scheme')\" } }"
-}
-EOF
-)"
+  --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query 'Account' --output text):function:mandelbrot/invocations" \
+  --request-templates '{"application/json": "{ \"queryStringParameters\": { \"x\": \"$input.params('"'x'"')\", \"y\": \"$input.params('"'y'"')\", \"scale\": \"$input.params('"'scale'"')\", \"line\": \"$input.params('"'line'"')\", \"color_scheme\": \"$input.params('"'color_scheme'"')\" } }"}'
 
-# Create the method response for GET
+# Define the method response for GET
 aws apigateway put-method-response \
   --rest-api-id "$API_ID" \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
-  --status-code 200
+  --status-code 200 \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": false}'
 
-# Create the integration response for GET with corrected response parameters
+# Create the integration response for GET
 aws apigateway put-integration-response \
   --rest-api-id "$API_ID" \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
   --status-code 200 \
-  --response-parameters "$(cat <<EOF
-{
-  "method.response.header.Access-Control-Allow-Origin": "'*'"
-}
-EOF
-)"
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": "'*'"}'
 
 # Create the OPTIONS method
 aws apigateway put-method \
@@ -74,22 +67,22 @@ aws apigateway put-integration \
   --type MOCK \
   --request-templates '{"application/json": "{\"statusCode\": 200}"}'
 
-# Create the method response for OPTIONS with corrected response parameters
+# Define the method response for OPTIONS
 aws apigateway put-method-response \
   --rest-api-id "$API_ID" \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method OPTIONS \
   --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Headers":false,"method.response.header.Access-Control-Allow-Methods":false,"method.response.header.Access-Control-Allow-Origin":false}'
+  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": false, "method.response.header.Access-Control-Allow-Methods": false, "method.response.header.Access-Control-Allow-Origin": false}'
 
-# Create the integration response for OPTIONS with corrected response parameters
+# Create the integration response for OPTIONS
 aws apigateway put-integration-response \
   --rest-api-id "$API_ID" \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method OPTIONS \
   --status-code 200 \
   --response-templates '{"application/json": ""}' \
-  --response-parameters "{\"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\",\"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\",\"method.response.header.Access-Control-Allow-Origin\":\"'*'\"}"
+  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": "\'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token\'", "method.response.header.Access-Control-Allow-Methods": "\'GET,OPTIONS\'", "method.response.header.Access-Control-Allow-Origin": "\'*\'"}'
 
 # Deploy the API
 aws apigateway create-deployment \
