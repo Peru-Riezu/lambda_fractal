@@ -84,9 +84,9 @@ aws apigateway put-integration-response \
   --http-method OPTIONS \
   --status-code 200 \
   --response-templates '{"application/json": ""}' \
-  --response-parameters 'method.response.header.Access-Control-Allow-Headers'="''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token''" \
-                        'method.response.header.Access-Control-Allow-Methods'="''GET,OPTIONS''" \
-                        'method.response.header.Access-Control-Allow-Origin'="''*''"
+  --response-parameters 'method.response.header.Access-Control-Allow-Headers'="'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" \
+                        'method.response.header.Access-Control-Allow-Methods'="'GET,OPTIONS'" \
+                        'method.response.header.Access-Control-Allow-Origin'="'*'"
 
 # Deploy the API
 aws apigateway create-deployment \
