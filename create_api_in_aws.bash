@@ -54,7 +54,6 @@ aws apigateway put-method-response \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
   --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": false}'
 
 # Create the integration response for GET
 echo "Setting up GET integration response..."
