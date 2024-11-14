@@ -1,0 +1,4 @@
+/home/user/lambda_fractal/lambda/build/CMakeFiles/mandelbrot.dir
+/home/user/lambda_fractal/lambda/build/CMakeFiles/aws-lambda-package-mandelbrot.dir
+/home/user/lambda_fractal/lambda/build/CMakeFiles/edit_cache.dir
+/home/user/lambda_fractal/lambda/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Ofast -flto CMakeFiles/mandelbrot.dir/mandelbrot.cpp.o -o mandelbrot  /usr/local/lib/libaws-lambda-runtime.a -lmpfr /usr/lib/x86_64-linux-gnu/libcurl.so /usr/lib/x86_64-linux-gnu/libbfd.so 

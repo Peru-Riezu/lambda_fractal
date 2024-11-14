@@ -1,0 +1,21 @@
+/* Make the entire page green */
+body {
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: green;
+}
+
+/* Centered black square */
+.black-square {
+	width: 1000px;
+	height: 1000px;
+	background-color: black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
