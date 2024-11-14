@@ -52,7 +52,7 @@ aws apigateway put-integration-response \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
   --status-code 200 \
-  --response-parameters 'method.response.header.Access-Control-Allow-Origin'="'*'"
+  --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\"}"
 
 # Create the OPTIONS method
 aws apigateway put-method \
@@ -75,7 +75,7 @@ aws apigateway put-method-response \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method OPTIONS \
   --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": false, "method.response.header.Access-Control-Allow-Methods": false, "method.response.header.Access-Control-Allow-Origin": false}'
+  --response-parameters '{"method.response.header.Access-Control-Allow-Headers":false,"method.response.header.Access-Control-Allow-Methods":false,"method.response.header.Access-Control-Allow-Origin":false}'
 
 # Create the integration response for OPTIONS with corrected response parameters
 aws apigateway put-integration-response \
@@ -84,9 +84,7 @@ aws apigateway put-integration-response \
   --http-method OPTIONS \
   --status-code 200 \
   --response-templates '{"application/json": ""}' \
-  --response-parameters 'method.response.header.Access-Control-Allow-Headers'="'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" \
-                        'method.response.header.Access-Control-Allow-Methods'="'GET,OPTIONS'" \
-                        'method.response.header.Access-Control-Allow-Origin'="'*'"
+  --response-parameters "{\"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\",\"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\",\"method.response.header.Access-Control-Allow-Origin\":\"'*'\"}"
 
 # Deploy the API
 aws apigateway create-deployment \
