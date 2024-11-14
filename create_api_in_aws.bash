@@ -54,7 +54,7 @@ aws apigateway put-integration-response \
   --status-code 200 \
   --response-parameters "$(cat <<EOF
 {
-  \"method.response.header.Access-Control-Allow-Origin\": \"'*'\"
+  "method.response.header.Access-Control-Allow-Origin": "'*'"
 }
 EOF
 )"
