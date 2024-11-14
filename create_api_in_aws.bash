@@ -46,7 +46,6 @@ aws apigateway put-integration \
 }
 EOF
 )"
-echo "GET integration set up."
 
 # Create the method response for GET
 echo "Setting up GET method response..."
@@ -64,7 +63,7 @@ aws apigateway put-integration-response \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
   --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": "'\''*'\''"}'
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": "*"}'
 
 # Create the OPTIONS method for CORS preflight
 echo "Creating OPTIONS method..."
@@ -83,7 +82,7 @@ aws apigateway put-integration \
   --type MOCK \
   --request-templates '{"application/json": "{\"statusCode\": 200}"}'
 
-# Create the method response for OPTIONS with CORS headers
+# Create the method response for OPTIONS
 echo "Setting up OPTIONS method response..."
 aws apigateway put-method-response \
   --rest-api-id "$API_ID" \
@@ -100,7 +99,7 @@ aws apigateway put-integration-response \
   --http-method OPTIONS \
   --status-code 200 \
   --response-templates '{"application/json": ""}' \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": "\'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token\'", "method.response.header.Access-Control-Allow-Methods": "\'GET,OPTIONS\'", "method.response.header.Access-Control-Allow-Origin": "\'*\'"}'
+  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token", "method.response.header.Access-Control-Allow-Methods": "GET,OPTIONS", "method.response.header.Access-Control-Allow-Origin": "*"}'
 
 # Deploy the API
 echo "Deploying API..."
