@@ -43,12 +43,8 @@ aws apigateway put-integration-response \
   --rest-api-id $API_ID \
   --resource-id $MANDELBROT_RESOURCE_ID \
   --http-method GET \
-  --status-code 200
+  --status-code 200 \
   --response-parameters "method.response.header.Access-Control-Allow-Origin"="'*'"
-
-
-
-
 
 aws apigateway put-method \
   --rest-api-id $API_ID \
