@@ -64,7 +64,7 @@ aws apigateway put-integration-response \
   --resource-id "$MANDELBROT_RESOURCE_ID" \
   --http-method GET \
   --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": "'*'"}'
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin": "'\''*'\''"}'
 
 # Create the OPTIONS method for CORS preflight
 echo "Creating OPTIONS method..."
