@@ -19,7 +19,7 @@ aws apigateway put-method \
 	--rest-api-id "$API_ID" \
 	--resource-id "$MANDELBROT_RESOURCE_ID" \
 	--http-method GET \
-	--authorization-type "NONE"
+	--authorization-type "NONE" \
 	--request-parameters '{"method.request.header.Content-Type": false}' \
 	--request-models '{"application/json": "Empty"}' \
 
@@ -44,7 +44,7 @@ aws apigateway put-method-response \
 	--http-method GET \
 	--status-code 200 \
 	--response-models application/json=Empty \
-	--response-parameters "method.response.header.Access-Control-Allow-Origin=true" \
+	--response-parameters "method.response.header.Access-Control-Allow-Origin=true"
 
 aws apigateway put-integration-response \
 	--rest-api-id "$API_ID" \
@@ -52,7 +52,7 @@ aws apigateway put-integration-response \
 	--http-method GET \
 	--status-code 200 \
 	--response-parameters "method.response.header.Access-Control-Allow-Origin=\"'*'\"" \
-	--response-templates '{"application/json": ""}' \
+	--response-templates '{"application/json": ""}'
 
 aws apigateway put-method \
 	--rest-api-id "$API_ID" \
@@ -73,7 +73,7 @@ aws apigateway put-method-response \
 	--http-method OPTIONS \
 	--status-code 200 \
 	--response-models application/json=Empty \
-	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":true, \"method.response.header.Access-Control-Allow-Methods\":true, \"method.response.header.Access-Control-Allow-Headers\":true}" \
+	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":true, \"method.response.header.Access-Control-Allow-Methods\":true, \"method.response.header.Access-Control-Allow-Headers\":true}" 
 
 aws apigateway put-integration-response \
 	--rest-api-id "$API_ID" \
