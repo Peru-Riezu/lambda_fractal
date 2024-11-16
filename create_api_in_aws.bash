@@ -71,9 +71,7 @@ aws apigateway put-method-response \
 	--http-method OPTIONS \
 	--status-code 200 \
 	--response-models application/json=Empty \
-	--response-parameters "method.response.header.Access-Control-Allow-Origin=true" \
-	--response-parameters "method.response.header.Access-Control-Allow-Methods=true" \
-	--response-parameters "method.response.header.Access-Control-Allow-Headers=true" \
+	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":true, \"method.response.header.Access-Control-Allow-Methods\":true, \"method.response.header.Access-Control-Allow-Headers\":true}" \
 	--region us-east-1
 
 aws apigateway put-integration-response \
@@ -81,9 +79,7 @@ aws apigateway put-integration-response \
 	--resource-id "$MANDELBROT_RESOURCE_ID" \
 	--http-method OPTIONS \
 	--status-code 200 \
-	--response-parameters "method.response.header.Access-Control-Allow-Origin=\"'*'\"" \
-	--response-parameters "method.response.header.Access-Control-Allow-Methods=\"GET,OPTIONS'\"" \
-	--response-parameters "method.response.header.Access-Control-Allow-Headers=\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\"" \
+	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\", \"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\", \"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\"}" \
 	--region us-east-1
 
 aws apigateway create-deployment \
