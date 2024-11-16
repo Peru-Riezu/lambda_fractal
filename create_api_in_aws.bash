@@ -36,31 +36,56 @@ EOF
 )"
 
 aws apigateway put-method-response \
-  --rest-api-id "$API_ID" \
-  --resource-id "$MANDELBROT_RESOURCE_ID" \
-  --http-method GET \
-  --status-code 200 \
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method GET \
+	--status-code 200 \
+	--response-models application/json=Empty \
+	--response-parameters "method.response.header.Access-Control-Allow-Origin=true" \
+	--region us-east-1
+
+aws apigateway put-integration-response \
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method GET \
+	--status-code 200 \
+	--response-parameters "method.response.header.Access-Control-Allow-Origin=\"'*'\"" \
+	--region us-east-1
 
 aws apigateway put-method \
-  --rest-api-id "$API_ID" \
-  --resource-id "$MANDELBROT_RESOURCE_ID" \
-  --http-method OPTIONS \
-  --authorization-type "NONE"
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method OPTIONS \
+	--authorization-type "NONE"
 
 aws apigateway put-integration \
-  --rest-api-id "$API_ID" \
-  --resource-id "$MANDELBROT_RESOURCE_ID" \
-  --http-method OPTIONS \
-  --type MOCK \
-  --request-templates '{"application/json": "{\"statusCode\": 200}"}'
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method OPTIONS \
+	--type MOCK \
+	--request-templates '{"application/json": "{\"statusCode\": 200}"}'
 
 aws apigateway put-method-response \
-  --rest-api-id "$API_ID" \
-  --resource-id "$MANDELBROT_RESOURCE_ID" \
-  --http-method OPTIONS \
-  --status-code 200 \
-  --response-parameters '{"method.response.header.Access-Control-Allow-Headers": false, "method.response.header.Access-Control-Allow-Methods": false, "method.response.header.Access-Control-Allow-Origin": false}'
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method OPTIONS \
+	--status-code 200 \
+	--response-models application/json=Empty \
+	--response-parameters "method.response.header.Access-Control-Allow-Origin=true" \
+	--response-parameters "method.response.header.Access-Control-Allow-Methods=true" \
+	--response-parameters "method.response.header.Access-Control-Allow-Headers=true" \
+	--region us-east-1
+
+aws apigateway put-integration-response \
+	--rest-api-id "$API_ID" \
+	--resource-id "$MANDELBROT_RESOURCE_ID" \
+	--http-method OPTIONS \
+	--status-code 200 \
+	--response-parameters "method.response.header.Access-Control-Allow-Origin='*'" \
+	--response-parameters "method.response.header.Access-Control-Allow-Methods='GET,OPTIONS'" \
+	--response-parameters "method.response.header.Access-Control-Allow-Headers='Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" \
+	--region us-east-1
 
 aws apigateway create-deployment \
-  --rest-api-id "$API_ID" \
-  --stage-name v1
+	--rest-api-id "$API_ID" \
+	--stage-name v1
