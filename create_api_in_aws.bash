@@ -50,6 +50,7 @@ aws apigateway put-integration-response \
 	--http-method GET \
 	--status-code 200 \
 	--response-parameters "method.response.header.Access-Control-Allow-Origin=\"'*'\"" \
+	--response-templates '{"application/json": ""}' \
 	--region us-east-1
 
 aws apigateway put-method \
