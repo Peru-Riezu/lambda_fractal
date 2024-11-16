@@ -20,6 +20,8 @@ aws apigateway put-method \
 	--resource-id "$MANDELBROT_RESOURCE_ID" \
 	--http-method GET \
 	--authorization-type "NONE"
+	--request-parameters '{"method.request.header.Content-Type": false}' \
+	--request-models '{"application/json": "Empty"}' \
 
 aws apigateway put-integration \
 	--rest-api-id "$API_ID" \
@@ -27,6 +29,7 @@ aws apigateway put-integration \
 	--http-method GET \
 	--integration-http-method POST \
 	--type AWS \
+	--content-handling CONVERT_TO_TEXT \
 	--uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):function:mandelbrot/invocations" \
   --request-templates "$(cat <<EOF
 {
@@ -42,7 +45,6 @@ aws apigateway put-method-response \
 	--status-code 200 \
 	--response-models application/json=Empty \
 	--response-parameters "method.response.header.Access-Control-Allow-Origin=true" \
-	--region us-east-1
 
 aws apigateway put-integration-response \
 	--rest-api-id "$API_ID" \
@@ -51,7 +53,6 @@ aws apigateway put-integration-response \
 	--status-code 200 \
 	--response-parameters "method.response.header.Access-Control-Allow-Origin=\"'*'\"" \
 	--response-templates '{"application/json": ""}' \
-	--region us-east-1
 
 aws apigateway put-method \
 	--rest-api-id "$API_ID" \
@@ -73,7 +74,6 @@ aws apigateway put-method-response \
 	--status-code 200 \
 	--response-models application/json=Empty \
 	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":true, \"method.response.header.Access-Control-Allow-Methods\":true, \"method.response.header.Access-Control-Allow-Headers\":true}" \
-	--region us-east-1
 
 aws apigateway put-integration-response \
 	--rest-api-id "$API_ID" \
@@ -81,7 +81,6 @@ aws apigateway put-integration-response \
 	--http-method OPTIONS \
 	--status-code 200 \
 	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\", \"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\", \"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\"}" \
-	--region us-east-1
 
 aws apigateway create-deployment \
 	--rest-api-id "$API_ID" \
