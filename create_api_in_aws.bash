@@ -1,6 +1,6 @@
 #!/bin/bash
 
-aws apigateway create-rest-api --name "mandelbrot_api" --region us-east-1
+aws apigateway create-rest-api --name "mandelbrot_api" --region us-east-1 --endpoint-configuration types=REGIONAL
 
 API_ID=$(aws apigateway get-rest-apis --query "items[?name=='mandelbrot_api'].id" --output text)
 
