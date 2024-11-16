@@ -20,7 +20,7 @@ mpfr::mpreal linear_interpolate(unsigned char a, unsigned char b, mpfr::mpreal &
 
 mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations)
 {
-	mpfr::mpreal const escape_radius = 400.0;
+	mpfr::mpreal const escape_radius = 4000.0;
 	mpfr::mpreal const escape_radius_squared = escape_radius * escape_radius;
 	mpfr::mpreal       z_real = 0.0;
 	mpfr::mpreal       z_imag = 0.0;
@@ -46,7 +46,7 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 	}
 
 	mpfr::mpreal value = mpfr::sqrt(z_real * z_real + z_imag * z_imag);
-	return (iterations - (1 - ((mpfr::log(escape_radius) / mpfr::log(1.142)) / (mpfr::log(value) / mpfr::log(1.142)))));
+	return ((mpfr::powr(42, value - escape_radius) / mpfr::powr(42, value)) - 1);
 }
 
 s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
@@ -113,7 +113,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	{
 		nlohmann::json event = nlohmann::json::parse(req.payload);
 
-		mpfr::mpreal::set_default_prec(512);
+		mpfr::mpreal::set_default_prec(1024);
 
 		auto query_params = event["queryStringParameters"];
 		if (query_params.is_null())
