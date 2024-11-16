@@ -83,12 +83,29 @@ aws apigateway put-integration-response \
 	--status-code 200 \
 	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\", \"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\", \"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\"}" \
 
+PERMISSION_STATEMENT_ID="apigateway-invoke-permission"
+LAMBDA_FUNCTION_ARN="arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):function:mandelbrot"
+API_ARN="arn:aws:execute-api:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):$API_ID/*/GET/mandelbrot"
+
+EXISTING_PERMISSION=$(aws lambda get-policy \
+	--function-name "$LAMBDA_FUNCTION_ARN" \
+	--query "Policy" \
+	--output text 2>/dev/null | grep "$PERMISSION_STATEMENT_ID")
+
+if [ -n "$EXISTING_PERMISSION" ]; then
+	echo "Permission exists, deleting..."
+	aws lambda remove-permission \
+		--function-name "$LAMBDA_FUNCTION_ARN" \
+		--statement-id "$PERMISSION_STATEMENT_ID"
+fi
+
 aws lambda add-permission \
-	--function-name arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):function:mandelbrot \
-	--statement-id apigateway-invoke-permission \
+	--function-name "$LAMBDA_FUNCTION_ARN" \
+	--statement-id "$PERMISSION_STATEMENT_ID" \
 	--action lambda:InvokeFunction \
 	--principal apigateway.amazonaws.com \
-	--source-arn arn:aws:execute-api:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):$API_ID/*/GET/mandelbrot
+	--source-arn "$API_ARN"
+
 
 aws apigateway create-deployment \
 	--rest-api-id "$API_ID" \
