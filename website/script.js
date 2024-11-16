@@ -1,4 +1,4 @@
-const baseUrl = "https://x8v52b4gc0.execute-api.us-east-1.amazonaws.com/v1/mandelbrot?x=-1&y=0&scale=1.5&color_scheme=1";
+const baseUrl = "https://edg881i6m9.execute-api.us-east-1.amazonaws.com/v1/mandelbrot?x=-1&y=0&scale=1.5&color_scheme=1";
 
 const canvas = document.getElementById("pixelCanvas");
 const ctx = canvas.getContext("2d");

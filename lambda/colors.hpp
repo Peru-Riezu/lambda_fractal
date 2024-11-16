@@ -1,6 +1,14 @@
 #pragma once
 
+#include <mpreal.h>
 #include <vector>
+
+struct s_high_precision_color
+{
+		mpfr::mpreal r;
+		mpfr::mpreal g;
+		mpfr::mpreal b;
+};
 
 struct s_color
 {

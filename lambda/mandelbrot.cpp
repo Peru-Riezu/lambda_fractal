@@ -7,7 +7,8 @@
 #include <string>
 #include <vector>
 
-int clamp(int value, int min = 0, int max = 255)
+// NOLINTNEXTLINE
+unsigned char clamp(unsigned long int value, unsigned long int min = 0, unsigned long int max = 255)
 {
 	return std::max(min, std::min(value, max));
 }
@@ -45,34 +46,34 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 	}
 
 	mpfr::mpreal value = mpfr::sqrt(z_real * z_real + z_imag * z_imag);
-	return (iterations - (1 - ((mpfr::log(escape_radius) / mpfr::log(1.42)) / (mpfr::log(value) / mpfr::log(1.42)))));
+	return (iterations - (1 - ((mpfr::log(escape_radius) / mpfr::log(1.142)) / (mpfr::log(value) / mpfr::log(1.142)))));
 }
 
-s_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
+s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
 {
 	int const             max_iterations = 420;
 	mpfr::mpreal          iterations = get_iterations(x, y, max_iterations);
 	std::vector<s_color> &colors = colorschemes[color_scheme_number];
 	size_t                num_colors = colors.size();
 	mpfr::mpreal          res;
-	int                   index_floor = static_cast<int>(static_cast<int>(floor(iterations)) % num_colors);
-	int                   index_ceil = static_cast<int>(static_cast<int>(ceil(iterations)) % num_colors);
-	mpfr::mpreal          fraction = fmod(iterations, 1.0);
-	unsigned char         r =
+	int                   index_floor = static_cast<int>(static_cast<int>(mpfr::floor(iterations)) % num_colors);
+	int                   index_ceil = static_cast<int>(static_cast<int>(mpfr::ceil(iterations)) % num_colors);
+	mpfr::mpreal          fraction = mpfr::fmod(iterations, 1.0);
+	mpfr::mpreal          r =
 		static_cast<unsigned char>(linear_interpolate(colors[index_floor].r, colors[index_ceil].r, fraction));
-	unsigned char g =
+	mpfr::mpreal g =
 		static_cast<unsigned char>(linear_interpolate(colors[index_floor].g, colors[index_ceil].g, fraction));
-	unsigned char b =
+	mpfr::mpreal b =
 		static_cast<unsigned char>(linear_interpolate(colors[index_floor].b, colors[index_ceil].b, fraction));
 
 	if (iterations >= max_iterations)
 	{
 		return {0, 0, 0};
 	}
-	return (s_color{r, g, b});
+	return (s_high_precision_color{r, g, b});
 }
 
-std::vector<int> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::mpreal &delta_of_x,
+std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::mpreal &delta_of_x,
 										int color_scheme_number)
 {
 	std::vector<std::pair<mpfr::mpreal, mpfr::mpreal>> offsets = {
@@ -88,9 +89,9 @@ std::vector<int> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::
 		{-delta_of_x / 3,  delta_of_x / 3},
 		{-delta_of_x / 3, -delta_of_x / 3},
 	};
-	int sum_r = 0;
-	int sum_g = 0;
-	int sum_b = 0;
+	mpfr::mpreal sum_r = 0;
+	mpfr::mpreal sum_g = 0;
+	mpfr::mpreal sum_b = 0;
 
 	for (auto const &[dx, dy] : offsets)
 	{
@@ -101,8 +102,9 @@ std::vector<int> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
-	return {clamp(sum_r / static_cast<int>(offsets.size())), clamp(sum_g / static_cast<int>(offsets.size())),
-			clamp(sum_b / static_cast<int>(offsets.size()))};
+	return {clamp(sum_r.toULong() / offsets.size()),
+			clamp(sum_g.toULong() / offsets.size()),
+			clamp(sum_b.toULong() / offsets.size())};
 }
 
 aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocation_request const &req)
@@ -129,7 +131,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		y += ((500 - line_number) * scale / 500);
 		x -= scale;
 
-		std::vector<std::vector<int>> line_pixels(1000);
+		std::vector<std::vector<unsigned char>> line_pixels(1000);
 		for (int i = 0; i < 1000; ++i)
 		{
 			line_pixels[i] = get_anti_aliased_pixel(x, y, delta_of_x, static_cast<int>(color_scheme_number));
