@@ -58,6 +58,7 @@ aws apigateway put-method \
 	--rest-api-id "$API_ID" \
 	--resource-id "$MANDELBROT_RESOURCE_ID" \
 	--http-method OPTIONS \
+	--request-parameters '{}' \
 	--authorization-type "NONE"
 
 aws apigateway put-integration \
@@ -81,6 +82,13 @@ aws apigateway put-integration-response \
 	--http-method OPTIONS \
 	--status-code 200 \
 	--response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\", \"method.response.header.Access-Control-Allow-Methods\":\"'GET,OPTIONS'\", \"method.response.header.Access-Control-Allow-Headers\":\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'\"}" \
+
+aws lambda add-permission \
+	--function-name arn:aws:lambda:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):function:mandelbrot \
+	--statement-id apigateway-invoke-permission \
+	--action lambda:InvokeFunction \
+	--principal apigateway.amazonaws.com \
+	--source-arn arn:aws:execute-api:us-east-1:$(aws sts get-caller-identity --query "Account" --output text):$API_ID/*/GET/mandelbrot
 
 aws apigateway create-deployment \
 	--rest-api-id "$API_ID" \
