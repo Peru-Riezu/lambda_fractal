@@ -36,7 +36,7 @@ static std::vector<std::vector<s_color>> colorschemes = {
  {153, 87, 0}, // Brown
  {106, 52, 3}, // Darker Brown
  {50, 28, 11}, // Deep Brown
- {0, 0, 0}, // Black
+ {42, 43, 54}, // ???
  {0, 43, 54}, // Midnight Blue
  {0, 57, 78}, // Deep Sea Blue
  {0, 77, 102}, // Teal Blue
