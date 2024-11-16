@@ -146,7 +146,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		nlohmann::json response_body = nlohmann::json{
 			{"line_pixels", line_pixels}
         };
-		std::cout << response_body.dump();
+//		std::cout << response_body.dump();
 		return aws::lambda_runtime::invocation_response::success(response_body.dump(), "application/json");
 	}
 	catch (std::exception const &e)
@@ -158,9 +158,9 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 //g++ -fsanitize=address,undefined,leak mandelbrot.cpp -lmpfr -laws-lambda-runtime -lcurl
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) * argv[])
 {
-	aws::lambda_runtime::invocation_request
-	req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\",\"line\":\"1\",\"color_scheme\":\"1\" }}"};
-	my_handler(req);
-//	run_handler(my_handler);
+//	aws::lambda_runtime::invocation_request
+//	req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\",\"line\":\"1\",\"color_scheme\":\"1\" }}"};
+//	my_handler(req);
+	run_handler(my_handler);
 	return 0;
 }
