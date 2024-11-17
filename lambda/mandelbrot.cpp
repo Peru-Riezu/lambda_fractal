@@ -47,7 +47,7 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 
 	mpfr::mpreal value = mpfr::sqrt(z_real * z_real + z_imag * z_imag);
 	mpfr::mpreal normalizer =
-		mpfr::pow(mpfr::abs((escape_radius / (escape_radius + mpfr::pow((value - escape_radius), 4))) - 1), 4);
+		mpfr::pow(mpfr::abs((escape_radius / (escape_radius + mpfr::pow((value - escape_radius), 2.042))) - 1), 42);
 	return iterations - normalizer;
 }
 
