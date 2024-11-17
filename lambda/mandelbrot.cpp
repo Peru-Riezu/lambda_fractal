@@ -46,11 +46,14 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 	}
 
 	mpfr::mpreal value = mpfr::sqrt(z_real * z_real + z_imag * z_imag);
-	mpfr::mpreal ret = (mpfr::mpreal{iterations} - ((mpfr::powr(1.07, value - escape_radius) - 1) / mpfr::powr(1.07, value)));
-	std::cout << ret << std::endl;
-	std::cout << value << std::endl;
-	std::cout << iterations << std::endl << std::endl;
-	//return (mpfr::mpreal{iterations} - ((mpfr::powr(2, value - escape_radius) - 1) / mpfr::powr(2, value)));
+	mpfr::mpreal normalizer =
+		mpfr::pow(mpfr::abs((escape_radius / (escape_radius + mpfr::pow((value - escape_radius), 4))) - 1), 4);
+	mpfr::mpreal ret = iterations - normalizer;
+	std::cout << "ret: " << ret << std::endl;
+	std::cout << "normalizer: " << normalizer << std::endl;
+	std::cout << "value: " << value << std::endl;
+	std::cout << "iterations: " << iterations << std::endl << std::endl;
+	// return (mpfr::mpreal{iterations} - ((mpfr::powr(2, value - escape_radius) - 1) / mpfr::powr(2, value)));
 	return ret;
 }
 
@@ -79,7 +82,7 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 }
 
 std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::mpreal &delta_of_x,
-										int color_scheme_number)
+												  int color_scheme_number)
 {
 	std::vector<std::pair<mpfr::mpreal, mpfr::mpreal>> offsets = {
 		{			  0,			   0},
@@ -107,8 +110,7 @@ std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal 
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
-	return {clamp(sum_r.toULong() / offsets.size()),
-			clamp(sum_g.toULong() / offsets.size()),
+	return {clamp(sum_r.toULong() / offsets.size()), clamp(sum_g.toULong() / offsets.size()),
 			clamp(sum_b.toULong() / offsets.size())};
 }
 
@@ -146,7 +148,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		nlohmann::json response_body = nlohmann::json{
 			{"line_pixels", line_pixels}
         };
-//		std::cout << response_body.dump();
+		std::cout << response_body.dump();
 		return aws::lambda_runtime::invocation_response::success(response_body.dump(), "application/json");
 	}
 	catch (std::exception const &e)
@@ -155,12 +157,12 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	}
 }
 
-//g++ -fsanitize=address,undefined,leak mandelbrot.cpp -lmpfr -laws-lambda-runtime -lcurl
+// g++ -fsanitize=address,undefined,leak mandelbrot.cpp -lmpfr -laws-lambda-runtime -lcurl
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) * argv[])
 {
-//	aws::lambda_runtime::invocation_request
-//	req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\",\"line\":\"1\",\"color_scheme\":\"1\" }}"};
-//	my_handler(req);
-	run_handler(my_handler);
+	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
+												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
+	my_handler(req);
+	//	run_handler(my_handler);
 	return 0;
 }
