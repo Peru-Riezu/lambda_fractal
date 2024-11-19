@@ -39,16 +39,12 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 		z_imag = new_z_imag;
 		iterations++;
 	}
-
 	if (iterations == max_iterations)
 	{
 		return max_iterations;
 	}
-
-	mpfr::mpreal value = mpfr::sqrt(z_real * z_real + z_imag * z_imag);
-	mpfr::mpreal normalizer =
-		mpfr::pow(mpfr::abs((escape_radius / (escape_radius + mpfr::pow((value - escape_radius), 2.042))) - 1), 42);
-	return iterations - normalizer;
+	mpfr::mpreal value = z_real * z_real + z_imag * z_imag;
+	return (iterations + 1 - mpfr::log(value / 2) / (2 * mpfr::log(2)));
 }
 
 s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
@@ -113,15 +109,8 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	try
 	{
 		nlohmann::json event = nlohmann::json::parse(req.payload);
-
 		mpfr::mpreal::set_default_prec(1024);
-
-		auto query_params = event["queryStringParameters"];
-		if (query_params.is_null())
-		{
-			return aws::lambda_runtime::invocation_response::failure("Missing query parameters", "application/json");
-		}
-
+		nlohmann::json query_params = event["queryStringParameters"];
 		mpfr::mpreal x = std::stod(query_params["x"].get<std::string>());
 		mpfr::mpreal y = std::stod(query_params["y"].get<std::string>());
 		mpfr::mpreal scale = std::stod(query_params["scale"].get<std::string>());
@@ -131,14 +120,12 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		mpfr::mpreal delta_of_x = scale * 2 / 1000;
 		y += ((500 - line_number) * scale / 500);
 		x -= scale;
-
 		std::vector<std::vector<unsigned char>> line_pixels(1000);
 		for (int i = 0; i < 1000; ++i)
 		{
 			line_pixels[i] = get_anti_aliased_pixel(x, y, delta_of_x, static_cast<int>(color_scheme_number));
 			x += delta_of_x;
 		}
-
 		nlohmann::json response_body = nlohmann::json{
 			{"line_pixels", line_pixels}
         };
@@ -146,6 +133,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	}
 	catch (std::exception const &e)
 	{
+		std::cout << "failure";
 		return aws::lambda_runtime::invocation_response::failure(e.what(), "application/json");
 	}
 }
@@ -154,6 +142,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 //	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
 //												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
 //	my_handler(req);
+//		std::cout << response_body.dump();
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) * argv[])
 {
 	run_handler(my_handler);
