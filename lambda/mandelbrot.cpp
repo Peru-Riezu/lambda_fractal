@@ -101,8 +101,8 @@ std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal 
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
-	return {clamp(sum_r.toULong() / offsets.size()), clamp(sum_g.toULong() / offsets.size()),
-			clamp(sum_b.toULong() / offsets.size())};
+	return (std::vector<unsigned char>{clamp(sum_r.toULong() / offsets.size()), clamp(sum_g.toULong() / offsets.size()),
+			clamp(sum_b.toULong() / offsets.size())});
 }
 
 aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocation_request const &req)
@@ -130,22 +130,21 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		nlohmann::json response_body = nlohmann::json{
 			{"line_pixels", line_pixels}
         };
-		return aws::lambda_runtime::invocation_response::success(response_body.dump(), "application/json");
+		return (aws::lambda_runtime::invocation_response::success(response_body.dump(), "application/json"));
 	}
 	catch (std::exception const &e)
 	{
-		return aws::lambda_runtime::invocation_response::failure(e.what(), "application/json");
+		return (aws::lambda_runtime::invocation_response::failure(e.what(), "application/json"));
 	}
 }
 
 //	g++ -fsanitize=address,undefined,leak mandelbrot.cpp -lmpfr -laws-lambda-runtime -lcurl
 //		std::cout << response_body.dump();
+//	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
+//												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
+//	my_handler(req);
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) * argv[])
 {
-	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
-												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
-	my_handler(req);
-
-	//run_handler(my_handler);
-	return 0;
+	run_handler(my_handler);
+	return (0);
 }
