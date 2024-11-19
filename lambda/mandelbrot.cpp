@@ -38,8 +38,7 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 		return max_iterations;
 	}
 	mpfr::mpreal value = z_real * z_real + z_imag * z_imag;
-//	mpfr::mpreal normalizer = (1 - mpfr::exp(-.37 * (value / (escape_radius * escape_radius) - 1)));
-	mpfr::mpreal normalizer = 0;
+	mpfr::mpreal normalizer = (1 - mpfr::exp(-.37 * (value / (escape_radius * escape_radius) - 1)));
 	return (iterations - normalizer);
 }
 
@@ -54,11 +53,11 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 	int                   index_ceil = static_cast<int>(static_cast<int>(mpfr::ceil(iterations)) % num_colors);
 	mpfr::mpreal          fraction = mpfr::fmod(iterations, 1.0);
 	mpfr::mpreal          r =
-		static_cast<unsigned char>(linear_interpolate(colors[index_floor].r, colors[index_ceil].r, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].r, colors[index_floor].r, fraction));
 	mpfr::mpreal g =
-		static_cast<unsigned char>(linear_interpolate(colors[index_floor].g, colors[index_ceil].g, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].g, colors[index_floor].g, fraction));
 	mpfr::mpreal b =
-		static_cast<unsigned char>(linear_interpolate(colors[index_floor].b, colors[index_ceil].b, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].b, colors[index_floor].b, fraction));
 
 	if (iterations >= max_iterations)
 	{
