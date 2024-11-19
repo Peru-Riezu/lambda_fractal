@@ -7,15 +7,9 @@
 #include <string>
 #include <vector>
 
-// NOLINTNEXTLINE
-unsigned char clamp(unsigned long int value, unsigned long int min = 0, unsigned long int max = 255)
-{
-	return std::max(min, std::min(value, max));
-}
-
 mpfr::mpreal linear_interpolate(unsigned char a, unsigned char b, mpfr::mpreal &t)
 {
-	return (1.0 - t) * a + t * b;
+	return ((mpfr::mpreal(1.0) - t) * mpfr::mpreal(a) + t * mpfr::mpreal(b));
 }
 
 mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations)
@@ -101,8 +95,9 @@ std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal 
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
-	return (std::vector<unsigned char>{clamp(sum_r.toULong() / offsets.size()), clamp(sum_g.toULong() / offsets.size()),
-			clamp(sum_b.toULong() / offsets.size())});
+	return (std::vector<unsigned char>{static_cast<unsigned char>(sum_r.toULong() / offsets.size()),
+			static_cast<unsigned char>(sum_g.toULong() / offsets.size()),
+			static_cast<unsigned char>(sum_b.toULong() / offsets.size())});
 }
 
 aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocation_request const &req)
