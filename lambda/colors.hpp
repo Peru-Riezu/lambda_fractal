@@ -22,8 +22,8 @@ static std::vector<std::vector<s_color>> colorschemes = {
      {66, 30, 15}, // Dark Brown
  {25, 7, 26}, // Deep Purple
  {9, 1, 47}, // Dark Blue
- {4, 4, 73}, // Blue
- {0, 7, 100}, // Medium Blue
+ {10, 4, 73}, // Blue
+ {11, 7, 100}, // Medium Blue
  {12, 44, 138}, // Lighter Blue
  {24, 82, 177}, // Even Lighter Blue
  {57, 125, 209}, // Light Blue
@@ -31,12 +31,12 @@ static std::vector<std::vector<s_color>> colorschemes = {
  {211, 236, 248}, // Very Light Blue
  {241, 233, 191}, // Light Yellow
  {248, 201, 95}, // Yellow
- {255, 170, 0}, // Orange
- {204, 128, 0}, // Dark Orange
- {153, 87, 0}, // Brown
+ {255, 170, 40}, // Orange
+ {204, 128, 5}, // Dark Orange
+ {153, 87, 4}, // Brown
  {106, 52, 3}, // Darker Brown
- {50, 28, 11}, // Deep Brown
- {42, 43, 54}, // ???
+ {50, 28, 1}, // Deep Brown
+ {42, 25, 51}, // ???
  {0, 43, 54}, // Midnight Blue
  {0, 57, 78}, // Deep Sea Blue
  {0, 77, 102}, // Teal Blue
