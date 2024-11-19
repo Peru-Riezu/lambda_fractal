@@ -5,6 +5,7 @@
 #include <mpreal.h>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <utility>
 #include <vector>
 
 mpfr::mpreal linear_interpolate(unsigned char a, unsigned char b, mpfr::mpreal &t)
@@ -66,6 +67,17 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 	return (s_high_precision_color{r, g, b});
 }
 
+//NOLINTNEXTLINE
+unsigned char clamp(mpfr::mpreal &x)
+{
+	x = mpfr::round(x);
+	if (x > 255)
+	{
+		return (255);
+	}
+	return (static_cast<unsigned char>(x.toULong()));
+}
+
 std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::mpreal &delta_of_x,
 												  int color_scheme_number)
 {
@@ -86,18 +98,18 @@ std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal 
 	mpfr::mpreal sum_g = 0;
 	mpfr::mpreal sum_b = 0;
 
-	for (auto const &[dx, dy] : offsets)
+	for (size_t i = 0; i < offsets.size(); i++)
 	{
-		auto x_prima = x + dx;
-		auto y_prima = y + dy;
-		auto pixel = get_pixel(x_prima, y_prima, color_scheme_number);
+		mpfr::mpreal x_prima = x + offsets[i].first;
+		mpfr::mpreal y_prima = y + offsets[i].second;
+		s_high_precision_color pixel = get_pixel(x_prima, y_prima, color_scheme_number);
 		sum_r += pixel.r;
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
-	return (std::vector<unsigned char>{static_cast<unsigned char>(sum_r.toULong() / offsets.size()),
-			static_cast<unsigned char>(sum_g.toULong() / offsets.size()),
-			static_cast<unsigned char>(sum_b.toULong() / offsets.size())});
+	return {clamp(sum_r),
+			clamp(sum_g),
+			clamp(sum_b)};
 }
 
 aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocation_request const &req)
