@@ -44,7 +44,7 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 		return max_iterations;
 	}
 	mpfr::mpreal value = z_real * z_real + z_imag * z_imag;
-	return (iterations - mpfr::log(value + escape_radius) / log(value));
+	return (iterations - (1 - mpfr::exp(-.042 * (value / 2 - 1))));
 }
 
 s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
@@ -133,7 +133,6 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	}
 	catch (std::exception const &e)
 	{
-		std::cout << "failure";
 		return aws::lambda_runtime::invocation_response::failure(e.what(), "application/json");
 	}
 }
