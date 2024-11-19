@@ -68,7 +68,7 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 }
 
 //NOLINTNEXTLINE
-unsigned char clamp(mpfr::mpreal &x)
+unsigned char clamp(mpfr::mpreal x)
 {
 	x = mpfr::round(x);
 	if (x > 255)
@@ -107,6 +107,9 @@ std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal 
 		sum_g += pixel.g;
 		sum_b += pixel.b;
 	}
+	sum_r /= offsets.size();
+	sum_g /= offsets.size();
+	sum_b /= offsets.size();
 	return {clamp(sum_r),
 			clamp(sum_g),
 			clamp(sum_b)};
