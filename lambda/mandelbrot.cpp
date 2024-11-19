@@ -44,7 +44,8 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 		return max_iterations;
 	}
 	mpfr::mpreal value = z_real * z_real + z_imag * z_imag;
-	return (iterations - (1 - mpfr::exp(-.042 * (value / 2 - 1))));
+	mpfr::mpreal normalizer = (1 - mpfr::exp(-.37 * (value / (escape_radius * escape_radius) - 1)));
+	return (iterations - normalizer);
 }
 
 s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
@@ -138,12 +139,13 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 }
 
 //	g++ -fsanitize=address,undefined,leak mandelbrot.cpp -lmpfr -laws-lambda-runtime -lcurl
-//	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
-//												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
-//	my_handler(req);
 //		std::cout << response_body.dump();
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) * argv[])
 {
-	run_handler(my_handler);
+	aws::lambda_runtime::invocation_request req{"{\"queryStringParameters\":{\"x\":\"1.3\",\"y\":\"0\",\"scale\":\"1\","
+												"\"line\":\"1\",\"color_scheme\":\"1\" }}"};
+	my_handler(req);
+
+	//run_handler(my_handler);
 	return 0;
 }
