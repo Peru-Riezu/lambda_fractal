@@ -9,7 +9,7 @@
 
 mpfr::mpreal linear_interpolate(unsigned char a, unsigned char b, mpfr::mpreal &t)
 {
-	return ((mpfr::mpreal(1.0) - t) * mpfr::mpreal(a) + t * mpfr::mpreal(b));
+	return ((((mpfr::mpreal(1.0) - t) * mpfr::mpreal(a)) + (t * mpfr::mpreal(b))));
 }
 
 mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations)
@@ -49,15 +49,15 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 	std::vector<s_color> &colors = colorschemes[color_scheme_number];
 	size_t                num_colors = colors.size();
 	mpfr::mpreal          res;
-	int                   index_floor = static_cast<int>(static_cast<int>(mpfr::floor(iterations)) % num_colors);
-	int                   index_ceil = static_cast<int>(static_cast<int>(mpfr::ceil(iterations)) % num_colors);
+	size_t                index_floor = static_cast<int>(static_cast<int>(mpfr::floor(iterations)) % num_colors);
+	size_t                index_ceil = (index_floor + 1) % num_colors;
 	mpfr::mpreal          fraction = mpfr::fmod(iterations, 1.0);
 	mpfr::mpreal          r =
-		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].r, colors[index_floor].r, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_floor].r, colors[index_ceil].r, fraction));
 	mpfr::mpreal g =
-		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].g, colors[index_floor].g, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_floor].g, colors[index_ceil].g, fraction));
 	mpfr::mpreal b =
-		static_cast<unsigned char>(linear_interpolate(colors[index_ceil].b, colors[index_floor].b, fraction));
+		static_cast<unsigned char>(linear_interpolate(colors[index_floor].b, colors[index_ceil].b, fraction));
 
 	if (iterations >= max_iterations)
 	{
