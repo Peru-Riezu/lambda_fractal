@@ -70,7 +70,7 @@ s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_sch
 //NOLINTNEXTLINE
 unsigned char clamp(mpfr::mpreal x)
 {
-	x = mpfr::round(x);
+	x = mpfr::rint_round(x);
 	if (x > 255)
 	{
 		return (255);
@@ -121,6 +121,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 	{
 		nlohmann::json event = nlohmann::json::parse(req.payload);
 		mpfr::mpreal::set_default_prec(1024);
+		mpfr::mpreal::set_default_rnd(MPFR_RNDA);
 		nlohmann::json query_params = event["queryStringParameters"];
 		mpfr::mpreal x = std::stod(query_params["x"].get<std::string>());
 		mpfr::mpreal y = std::stod(query_params["y"].get<std::string>());
