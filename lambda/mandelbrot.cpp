@@ -44,7 +44,7 @@ mpfr::mpreal get_iterations(mpfr::mpreal &x, mpfr::mpreal &y, int max_iterations
 		return max_iterations;
 	}
 	mpfr::mpreal value = z_real * z_real + z_imag * z_imag;
-	return (iterations + 1 - mpfr::log(value / 2) / (2 * mpfr::log(2)));
+	return (iterations - mpfr::log(value + escape_radius) / log(value));
 }
 
 s_high_precision_color get_pixel(mpfr::mpreal &x, mpfr::mpreal &y, int color_scheme_number)
