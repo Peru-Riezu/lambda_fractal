@@ -130,7 +130,7 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		size_t color_scheme_number = std::stoi(query_params["color_scheme"].get<std::string>()) % colorschemes.size();
 
 		mpfr::mpreal delta_of_x = scale * 2 / 1000;
-		y += ((500 - line_number) * scale / 500);
+		y += ((325 - line_number) * delta_of_x);
 		x -= scale;
 		std::vector<std::vector<unsigned char>> line_pixels(1000);
 		for (int i = 0; i < 1000; ++i)
