@@ -7,7 +7,7 @@ const ctx = canvas.getContext("2d");
 const fetchPromises = [];
 
 // Start all fetch requests and store the promises
-for (let line = 1; line <= 1000; line++) {
+for (let line = 1; line <= 650; line++) {
     const url = `${baseUrl}&line=${line}`;
     const fetchPromise = fetch(url, { mode: 'cors' });
     fetchPromises.push({ line, fetchPromise });

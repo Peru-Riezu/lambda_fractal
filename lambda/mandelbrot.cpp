@@ -79,20 +79,20 @@ unsigned char clamp(mpfr::mpreal x)
 }
 
 std::vector<unsigned char> get_anti_aliased_pixel(mpfr::mpreal &x, mpfr::mpreal &y, mpfr::mpreal &delta_of_x,
-												  int color_scheme_number)
+												  mpfr::mpreal &delta_of_y, int color_scheme_number)
 {
 	std::vector<std::pair<mpfr::mpreal, mpfr::mpreal>> offsets = {
 		{			  0,			   0},
-		{			  0,  delta_of_x / 3},
-		{			  0, -delta_of_x / 3},
+		{			  0,  delta_of_y / 3},
+		{			  0, -delta_of_y / 3},
 
 		{ delta_of_x / 3,               0},
-		{ delta_of_x / 3,  delta_of_x / 3},
-		{ delta_of_x / 3, -delta_of_x / 3},
+		{ delta_of_x / 3,  delta_of_y / 3},
+		{ delta_of_x / 3, -delta_of_y / 3},
 
 		{-delta_of_x / 3,               0},
-		{-delta_of_x / 3,  delta_of_x / 3},
-		{-delta_of_x / 3, -delta_of_x / 3},
+		{-delta_of_x / 3,  delta_of_y / 3},
+		{-delta_of_x / 3, -delta_of_y / 3},
 	};
 	mpfr::mpreal sum_r = 0;
 	mpfr::mpreal sum_g = 0;
@@ -130,12 +130,13 @@ aws::lambda_runtime::invocation_response my_handler(aws::lambda_runtime::invocat
 		size_t color_scheme_number = std::stoi(query_params["color_scheme"].get<std::string>()) % colorschemes.size();
 
 		mpfr::mpreal delta_of_x = scale * 2 / 1000;
+		mpfr::mpreal delta_of_y = delta_of_x * (650 / 2);
 		y += ((500 - line_number) * scale / 500);
 		x -= scale;
-		std::vector<std::vector<unsigned char>> line_pixels(1000);
-		for (int i = 0; i < 1000; ++i)
+		std::vector<std::vector<unsigned char>> line_pixels(650);
+		for (int i = 0; i < 650; ++i)
 		{
-			line_pixels[i] = get_anti_aliased_pixel(x, y, delta_of_x, static_cast<int>(color_scheme_number));
+			line_pixels[i] = get_anti_aliased_pixel(x, y, delta_of_x, delta_of_y, static_cast<int>(color_scheme_number));
 			x += delta_of_x;
 		}
 		nlohmann::json response_body = nlohmann::json{

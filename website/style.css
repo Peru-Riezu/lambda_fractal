@@ -12,7 +12,7 @@ body {
 /* Centered black square */
 .black-square {
 	width: 1000px;
-	height: 1000px;
+	height: 650px;
 	background-color: black;
 	display: flex;
 	justify-content: center;
